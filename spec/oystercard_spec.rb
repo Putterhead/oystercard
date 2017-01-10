@@ -48,10 +48,7 @@ describe Oystercard do
   end
 
 
-    #  it { is_expected.to respond_to(:touch_in)}
-
     describe '#deduct' do
-    # it { is_expected.to respond_to(:deduct).with(1).argument }
 
       it 'deducts from the card balance' do
         oystercard.top_up(20)
