@@ -3,11 +3,12 @@ require_relative './balance_error'
 class Oystercard
 
   BALANCE_LIMIT = 90
+  MINIMUM_CHARGE = 1
 
   attr_reader :balance, :state
 
-  def initialize(balance=0)
-    @balance = balance
+  def initialize
+    @balance = 0
     @state = false
   end
 
@@ -25,6 +26,7 @@ class Oystercard
   end
 
   def touch_in
+    fail "Insufficient funds" if balance < MINIMUM_CHARGE
     @state = true
   end
 
