@@ -17,10 +17,6 @@ class Oystercard
     @balance += amount
   end
 
-  def deduct(amount)
-    @balance -= amount
-  end
-
   def in_journey?
     @state
   end
@@ -31,11 +27,18 @@ class Oystercard
   end
 
   def touch_out
+    deduct(MINIMUM_CHARGE)
     @state = false
   end
 
   def over_limit?(amount)
     (@balance + amount) > BALANCE_LIMIT
+  end
+
+private
+
+  def deduct(amount)
+    @balance -= amount
   end
 
 end

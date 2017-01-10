@@ -6,7 +6,6 @@ describe Oystercard do
   # As a customer
   # I want money on my card
   subject(:oystercard){described_class.new}
-  #let(:oystercard) {double :oystercard balance: 1}
 
   it { is_expected.to respond_to :balance }
 
@@ -14,13 +13,10 @@ describe Oystercard do
     expect(oystercard.balance).to eq(0)
   end
 
-  context "No balance on card" do
-
-        it "checks if balance is less than minimum limit" do
+    it "checks if balance is less than minimum limit" do
       expect{oystercard.touch_in}.to raise_error "Insufficient funds"
-      end
-  end
-    # it { is_expected.to respond_to(:top_up).with(1).argument }
+    end
+
   context 'it has a full balance' do
     before{oystercard.top_up(Oystercard::BALANCE_LIMIT)}
 
@@ -39,21 +35,12 @@ describe Oystercard do
       expect(oystercard).not_to be_in_journey
     end
 
+    it 'reduces minimum fare from balance when touching out' do
+      expect{ oystercard.touch_out }.to change{ oystercard.balance }.by(-Oystercard::MINIMUM_CHARGE)
+    end
   end
-
-
 
   it 'is initially not in a journey' do
     expect(oystercard).not_to be_in_journey
   end
-
-
-    describe '#deduct' do
-
-      it 'deducts from the card balance' do
-        oystercard.top_up(20)
-        expect{ oystercard.deduct 1 }.to change{ oystercard.balance }.by -1
-      end
-    end
-
 end
