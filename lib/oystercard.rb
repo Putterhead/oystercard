@@ -1,4 +1,5 @@
 require_relative './balance_error'
+require_relative 'station'
 
 class Oystercard
 
