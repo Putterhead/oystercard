@@ -5,6 +5,7 @@ class Oystercard
 
   BALANCE_LIMIT = 90
   MINIMUM_CHARGE = 1
+  PENALTY = 6
 
   attr_reader :balance, :in_journey, :entry_station, :exit_station, :journeys
 
@@ -27,9 +28,13 @@ class Oystercard
   end
 
   def touch_out(station)
-    deduct(MINIMUM_CHARGE)
-    @trip[:exit_station] = station
-    @journeys << @trip
+    if @trip.empty?
+      deduct(PENALTY)
+    else
+      deduct(MINIMUM_CHARGE)
+      @trip[:exit_station] = station
+      @journeys << @trip
+    end
   end
 
   def over_limit?(amount)

@@ -31,6 +31,7 @@ describe Oystercard do
     end
 
     it 'reduces minimum fare from balance when touching out' do
+      oystercard.touch_in(entry_station)
       expect{ oystercard.touch_out(exit_station) }.to change{ oystercard.balance }.by(-Oystercard::MINIMUM_CHARGE)
     end
 
@@ -39,9 +40,11 @@ describe Oystercard do
     it 'stores a journey' do
       oystercard.touch_in(entry_station)
       oystercard.touch_out(exit_station)
-      expect(oystercard.journeys).to include trip #eq(1)
+      expect(oystercard.journeys).to include trip
+    end
+
+    it 'deducts penalty if no entry station in trip' do
+      expect{ oystercard.touch_out(exit_station)}.to change { oystercard.balance }.by(-Oystercard::PENALTY)
     end
   end
-
-
 end
