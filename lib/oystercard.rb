@@ -8,7 +8,7 @@ class Oystercard
   MINIMUM_CHARGE = 1
   PENALTY = 6
 
-  attr_reader :balance, :in_journey, :entry_station, :exit_station, :journeys
+  attr_reader :balance, :in_journey, :entry_station, :exit_station, :journeys, :trip
 
   def initialize
     @balance = 0
@@ -22,19 +22,17 @@ class Oystercard
   end
 
   def touch_in(station)
+    deduct(PENALTY) unless @trip == {}
     fail "Insufficient funds" if balance < MINIMUM_CHARGE
     @trip[:entry_station] = station
     @in_journey = true
   end
 
   def touch_out(station)
-    if @trip.empty?
-      deduct(PENALTY)
-    else
-      deduct(MINIMUM_CHARGE)
-      @trip[:exit_station] = station
-      @journeys << @trip
-    end
+    @trip.empty? ? deduct(PENALTY) : deduct(MINIMUM_CHARGE)
+    @trip[:exit_station] = station
+    @journeys << @trip
+    @trip = {}
   end
 
   def over_limit?(amount)
@@ -42,8 +40,6 @@ class Oystercard
   end
 
   private
-
-  attr_reader :trip
 
   def deduct(amount)
     @balance -= amount

@@ -8,5 +8,7 @@ describe Journey do
   it 'it starts a trip by saving an entry station' do
    journey.start(entry_station)
    expect(journey.trip[:entry_station]).to eq entry_station
- end 
+ end
+
+
 end
