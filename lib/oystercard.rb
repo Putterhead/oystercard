@@ -8,13 +8,13 @@ class Oystercard
   MINIMUM_CHARGE = 1
   PENALTY = 6
 
-  attr_reader :balance, :in_journey, :entry_station, :exit_station, :trip, :journeys
-  attr_writer :journeys
+  attr_reader :balance, :journey, :journeylog
+  attr_writer :journeylog
 
   def initialize
     @balance = 0
-    @journeys = Array.new
-    @trip = {}
+    @journeylog = Array.new
+    @journey = nil
   end
 
   def top_up(amount)
@@ -23,27 +23,17 @@ class Oystercard
   end
 
   def touch_in(station)
-
-
-    #journey = Journey.new(station)
-
-
-
-    deduct(PENALTY) unless @trip == {}
+    deduct(PENALTY) if @journey != nil
     fail "Insufficient funds" if balance < MINIMUM_CHARGE
-    @trip[:entry_station] = station
-    @in_journey = true
+    @journey = Journey.new(station)
   end
 
   def touch_out(station)
-    @trip.empty? ? deduct(PENALTY) : deduct(MINIMUM_CHARGE)
-    @trip[:exit_station] = station
-
-    # journey.end(station)
-    # @journeys << journey.complete
-    
-    @journeys << @trip
-    @trip = {}
+    fail "No journey initiated" if @journey == nil
+    @journey.end(station)
+    @journeylog << @journey.complete
+    deduct(@journey.fare)
+    @journey = nil
   end
 
   def over_limit?(amount)

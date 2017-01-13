@@ -7,6 +7,7 @@ describe Oystercard do
   # I want money on my card
   let(:entry_station){ double :station }
   let(:exit_station){ double :station }
+  let(:teststation) {double :station, name: "test", zone: 0}
   subject(:oystercard){described_class.new}
 
   it { is_expected.to respond_to :balance }
@@ -20,7 +21,7 @@ describe Oystercard do
   end
 
   it 'has an empty list of journeys by default' do
-    expect(oystercard.journeys).to be_empty
+    expect(oystercard.journeylog).to be_empty
   end
 
   context 'it has a full balance' do
@@ -31,25 +32,25 @@ describe Oystercard do
     end
 
     it 'reduces minimum fare from balance when touching out' do
-      oystercard.touch_in(entry_station)
-      expect{ oystercard.touch_out(exit_station) }.to change{ oystercard.balance }.by(-Oystercard::MINIMUM_CHARGE)
+      oystercard.touch_in(teststation)
+      expect{ oystercard.touch_out(teststation) }.to change{ oystercard.balance }.by(-Oystercard::MINIMUM_CHARGE)
     end
 
     let(:trip){ {entry_station: entry_station, exit_station: exit_station} }
 
     it 'stores a journey' do
-      oystercard.touch_in(entry_station)
-      oystercard.touch_out(exit_station)
-      expect(oystercard.journeys).to include trip
+      oystercard.touch_in(teststation)
+      oystercard.touch_out(teststation)
+      expect(oystercard.journeylog.size).to eq 1
     end
 
-    it 'deducts penalty if no entry station in trip' do
-      expect{ oystercard.touch_out(exit_station)}.to change { oystercard.balance }.by(-Oystercard::PENALTY)
+    it "raises an error on touch_out if passenger didn't touch_in" do
+      expect{ oystercard.touch_out(teststation)}.to raise_error "No journey initiated"
     end
 
     it 'deducts penalty if previous journey has not been touched out' do
-      oystercard.touch_in(entry_station)
-      expect{ oystercard.touch_in(entry_station)}.to change { oystercard.balance }.by(-Oystercard::PENALTY)
+      oystercard.touch_in(teststation)
+      expect{ oystercard.touch_in(teststation)}.to change { oystercard.balance }.by(-Oystercard::PENALTY)
     end
   end
 end
