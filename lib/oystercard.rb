@@ -1,5 +1,6 @@
 require_relative './balance_error'
 require_relative 'station'
+require_relative 'journey'
 
 class Oystercard
 
@@ -11,7 +12,6 @@ class Oystercard
 
   def initialize
     @balance = 0
-    @state = false
     @journeys = []
     @trip = {}
   end
