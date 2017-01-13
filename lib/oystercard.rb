@@ -23,7 +23,7 @@ class Oystercard
   end
 
   def touch_in(station)
-    deduct(PENALTY) if @journey != nil
+    deduct(@journey.fare) unless @journey == nil
     fail "Insufficient funds" if balance < MINIMUM_CHARGE
     @journey = Journey.new(station)
   end
