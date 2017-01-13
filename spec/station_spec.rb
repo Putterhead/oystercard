@@ -1,16 +1,14 @@
 require 'station'
 
 describe Station do
-    
-    name = "Bank"
-    zone = 1
-    subject {described_class.new(name: name, zone: zone)}
-    
+
+    subject {described_class.new(name="Bank", zone=1)}
+
     it 'saves its name' do
-        expect(subject.name).to eq name
+        expect(subject.name).to eq "Bank"
     end
-    
+
     it 'saves a station' do
-        expect(subject.zone).to eq zone
+        expect(subject.zone).to eq 1
     end
 end
